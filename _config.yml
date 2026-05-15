@@ -3,7 +3,6 @@ description: Operator-focused GTFOBins fork — fast binary lookup, tactical con
 baseurl: "/GTFOBins-Simplified"
 url: "https://aqueel707.github.io"
 
-# Disable the default jekyll-theme-primer (causes layout conflicts)
 theme: null
 remote_theme: null
 
@@ -23,6 +22,9 @@ markdown: kramdown
 highlighter: rouge
 
 exclude:
+  - README.md
+  - STRUCTURE.md
+  - CONTRIBUTING.md
   - Gemfile
   - Gemfile.lock
   - vendor/
@@ -30,11 +32,10 @@ exclude:
   - scripts/
   - schema/
   - .github/
-  - "*.md"
+  - venv/
+  - node_modules/
   - "*.py"
   - "*.sh"
-  - node_modules/
-  - venv/
 
 include:
   - pages

@@ -1,3 +1,4 @@
+---
 name: curl
 
 capabilities:
@@ -71,3 +72,4 @@ tags:
   - exfil
   - stager
   - file-transfer
+---
