@@ -1,7 +1,7 @@
 title: GTFOBins-Simplified
 description: Operator-focused GTFOBins fork — fast binary lookup, tactical context.
-baseurl: ""
-url: ""
+baseurl: "/GTFOBins-Simplified"
+url: "https://aqueel707.github.io"
 
 collections:
   binaries:
