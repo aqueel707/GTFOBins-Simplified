@@ -1,3 +1,4 @@
+---
 # schema/binary.template.yaml
 # Copy this file to _binaries/<name>.yaml and fill in all fields.
 # Omit optional fields rather than leaving them blank.
@@ -54,3 +55,4 @@ references:
 
 tags:
   - ""                            # arbitrary searchable tags — optional
+---

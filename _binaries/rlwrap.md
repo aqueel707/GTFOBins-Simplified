@@ -1,0 +1,35 @@
+---
+name: rlwrap
+capabilities:
+- exec
+- spawn
+- write
+required_permissions:
+  level: user
+difficulty: low
+opsec:
+  noise: medium
+  artifacts:
+  - ~/.bash_history
+  - Process arguments visible in ps and auditd
+  - File timestamps / inotify events on target paths
+  notes: ''
+persistence_potential: true
+examples:
+- id: file-write
+  description: Write content to an arbitrary file.
+  capabilities:
+  - write
+  command: rlwrap -l /path/to/output-file echo DATA
+  notes: This adds timestamps to the output file. This relies on the external `echo` command.
+- id: shell
+  description: Spawn an interactive shell.
+  capabilities:
+  - spawn
+  - exec
+  command: rlwrap /bin/sh -p
+references:
+- https://gtfobins.github.io/gtfobins/rlwrap/
+tags: []
+persistence_notes: Combine with write/exec primitives to drop cron entries, authorized_keys, or systemd units.
+---

