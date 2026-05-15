@@ -1,0 +1,74 @@
+---
+layout: default
+title: Index
+permalink: /
+---
+
+<div class="index-page">
+
+  <div class="search-bar">
+    <input
+      id="search-input"
+      type="text"
+      placeholder="search binaries..."
+      autocomplete="off"
+      spellcheck="false"
+    />
+    <div id="cap-filters" class="cap-filter-row">
+      {% assign all_caps = "exec,read,write,spawn,upload,download,suid,sudo,bind,reverse-shell" | split: "," %}
+      <span class="filter-label">FILTER:</span>
+      {% for cap in all_caps %}
+        <button class="cap-filter-btn cap-{{ cap }}" data-cap="{{ cap }}">{{ cap }}</button>
+      {% endfor %}
+      <button class="cap-filter-btn cap-clear" id="clear-filter">× clear</button>
+    </div>
+  </div>
+
+  <div class="binary-count">
+    <span id="visible-count">{{ site.binaries | size }}</span> / {{ site.binaries | size }} binaries
+  </div>
+
+  <table class="binary-table" id="binary-table">
+    <thead>
+      <tr>
+        <th>BINARY</th>
+        <th>CAPABILITIES</th>
+        <th>PERM</th>
+        <th>DIFFICULTY</th>
+        <th>NOISE</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% assign sorted = site.binaries | sort: "name" %}
+      {% for b in sorted %}
+      <tr
+        class="binary-row"
+        data-name="{{ b.name }}"
+        data-caps="{{ b.capabilities | join: ' ' }}"
+        data-tags="{{ b.tags | join: ' ' }}"
+      >
+        <td class="col-name">
+          <a href="{{ b.url | relative_url }}">{{ b.name }}</a>
+        </td>
+        <td class="col-caps">
+          {% for cap in b.capabilities %}
+            <span class="cap-badge cap-{{ cap }} cap-sm">{{ cap }}</span>
+          {% endfor %}
+        </td>
+        <td class="col-perm">
+          <span class="pill pill-perm perm-{{ b.required_permissions.level }}">
+            {{ b.required_permissions.level }}
+          </span>
+        </td>
+        <td class="col-diff">
+          <span class="diff-dot diff-{{ b.difficulty }}">{{ b.difficulty }}</span>
+        </td>
+        <td class="col-noise">
+          <span class="noise-dot noise-{{ b.opsec.noise }}">{{ b.opsec.noise }}</span>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>

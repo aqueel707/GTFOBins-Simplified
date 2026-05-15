@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://gtfobins-simplified/schema/binary.schema.json",
+  "title": "GTFOBins-Simplified Binary Entry",
+  "type": "object",
+  "required": ["name", "capabilities", "required_permissions", "difficulty", "opsec", "examples"],
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Binary name as found in PATH"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "exec", "read", "write", "spawn", "upload",
+          "download", "suid", "sudo", "bind", "reverse-shell"
+        ]
+      }
+    },
+    "required_permissions": {
+      "type": "object",
+      "required": ["level"],
+      "additionalProperties": false,
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": ["user", "sudo", "suid", "root"]
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "opsec": {
+      "type": "object",
+      "required": ["noise"],
+      "additionalProperties": false,
+      "properties": {
+        "noise": {
+          "type": "string",
+          "enum": ["low", "medium", "high"]
+        },
+        "artifacts": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "persistence_potential": { "type": "boolean" },
+    "persistence_notes": { "type": "string" },
+    "examples": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "description", "capabilities", "command"],
+        "additionalProperties": false,
+        "properties": {
+          "id":          { "type": "string" },
+          "description": { "type": "string" },
+          "capabilities": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "command": { "type": "string" },
+          "notes":   { "type": "string" }
+        }
+      }
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

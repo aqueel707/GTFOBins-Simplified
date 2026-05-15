@@ -1,26 +1,31 @@
-title: GTFOBins
-
-url: https://gtfobins.org
-
-exclude:
-  - /CNAME
-  - /Dockerfile
-  - /Gemfile*
-  - /LICENSE
-  - /Makefile
-  - /README.md
-  - /_private/
-  - /linter/
-  - /vendor/ # XXX this needs to be explicitly added
-
-permalink: pretty
+title: GTFOBins-Simplified
+description: Operator-focused GTFOBins fork — fast binary lookup, tactical context.
+baseurl: ""
+url: ""
 
 collections:
-  gtfobins:
+  binaries:
     output: true
+    permalink: /b/:name/
 
 defaults:
   - scope:
-      path: _gtfobins
+      path: ""
+      type: binaries
     values:
-      layout: gtfobin
+      layout: binary
+
+markdown: kramdown
+highlighter: rouge
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - scripts/
+  - schema/
+  - "*.sh"
+  - README.md
+  - node_modules/
+
+plugins:
+  - jekyll-seo-tag

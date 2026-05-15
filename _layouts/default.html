@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% if page.title %}{{ page.title }} — {% endif %}GTFOBins-Simplified</title>
+  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}" />
+  <meta name="description" content="{{ site.description }}" />
+</head>
+<body>
+  <header class="site-header">
+    <a href="{{ '/' | relative_url }}" class="site-logo">GTFO<span>simplified</span></a>
+    <nav class="site-nav">
+      <a href="{{ '/' | relative_url }}">INDEX</a>
+      <a href="https://github.com/{{ site.github_username }}/GTFOBins-Simplified" target="_blank" rel="noopener">GITHUB</a>
+    </nav>
+  </header>
+
+  <main class="site-main">
+    {{ content }}
+  </main>
+
+  <footer class="site-footer">
+    <span>GTFOBins-Simplified — fork of <a href="https://gtfobins.github.io" target="_blank" rel="noopener">GTFOBins</a></span>
+    <span>Data is for authorized testing only.</span>
+  </footer>
+
+  <script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+</body>
+</html>

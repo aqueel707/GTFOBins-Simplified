@@ -1,0 +1,99 @@
+---
+layout: default
+---
+
+{% assign b = page %}
+
+<article class="binary-page">
+
+  <div class="binary-header">
+    <h1 class="binary-name">{{ b.name }}</h1>
+
+    <div class="capability-row">
+      {% for cap in b.capabilities %}
+        <span class="cap-badge cap-{{ cap }}">{{ cap }}</span>
+      {% endfor %}
+    </div>
+
+    <div class="meta-pills">
+      <span class="pill pill-perm perm-{{ b.required_permissions.level }}">
+        PERM: {{ b.required_permissions.level | upcase }}
+      </span>
+      <span class="pill pill-diff diff-{{ b.difficulty }}">
+        DIFFICULTY: {{ b.difficulty | upcase }}
+      </span>
+      <span class="pill pill-noise noise-{{ b.opsec.noise }}">
+        NOISE: {{ b.opsec.noise | upcase }}
+      </span>
+      {% if b.persistence_potential %}
+        <span class="pill pill-persist">PERSISTENCE</span>
+      {% endif %}
+    </div>
+  </div>
+
+  <section class="examples-section">
+    {% for ex in b.examples %}
+    <div class="example-block" data-caps="{{ ex.capabilities | join: ' ' }}">
+      <div class="example-header">
+        <span class="example-id">{{ ex.id }}</span>
+        <span class="example-desc">{{ ex.description }}</span>
+        <div class="example-caps">
+          {% for cap in ex.capabilities %}
+            <span class="cap-badge cap-{{ cap }} cap-sm">{{ cap }}</span>
+          {% endfor %}
+        </div>
+      </div>
+      <pre class="command-block"><code>{{ ex.command | strip }}</code></pre>
+      {% if ex.notes %}
+        <p class="example-note">⚠ {{ ex.notes }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+
+  <details class="opsec-block">
+    <summary>OPSEC</summary>
+    <div class="opsec-body">
+      <div class="opsec-row">
+        <span class="opsec-label">Noise Level</span>
+        <span class="pill pill-noise noise-{{ b.opsec.noise }}">{{ b.opsec.noise | upcase }}</span>
+      </div>
+      {% if b.opsec.artifacts %}
+      <div class="opsec-row">
+        <span class="opsec-label">Artifacts</span>
+        <ul class="artifact-list">
+          {% for a in b.opsec.artifacts %}<li>{{ a }}</li>{% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+      {% if b.opsec.notes %}
+      <div class="opsec-row">
+        <span class="opsec-label">Notes</span>
+        <p>{{ b.opsec.notes }}</p>
+      </div>
+      {% endif %}
+      {% if b.persistence_potential and b.persistence_notes %}
+      <div class="opsec-row">
+        <span class="opsec-label">Persistence</span>
+        <p>{{ b.persistence_notes }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </details>
+
+  {% if b.required_permissions.notes %}
+  <div class="permission-notes">
+    <span class="label">PERM NOTE</span> {{ b.required_permissions.notes }}
+  </div>
+  {% endif %}
+
+  {% if b.references %}
+  <div class="refs-block">
+    <span class="label">REFS</span>
+    {% for ref in b.references %}
+      <a href="{{ ref }}" class="ref-link" target="_blank" rel="noopener">{{ ref }}</a>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+</article>
