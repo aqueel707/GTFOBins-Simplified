@@ -8,5 +8,5 @@ functions:
     contexts:
       sudo:
         comment: |-
-          The `mosh-server` is executed via `sudo`.
+          The `mosh-server` has to be executed via `sudo`, e.g., `'--server=sudo mosh-server'`.
 ...
